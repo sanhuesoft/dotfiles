@@ -14,8 +14,7 @@ return {
     },
     link = {
       wiki = {
-        icon = "󰈔 ",
-        highlight = "Normal",
+        enabled = false,
       },
     },
   },
