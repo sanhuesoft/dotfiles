@@ -51,7 +51,8 @@ return {
       end
 
       if not file_path then
-        local matches = vim.fn.globpath(vault_path, "**/" .. note_id .. ".md", true, true)
+        local matches =
+          vim.fn.globpath(vault_path, "**/" .. note_id .. ".md", true, true)
         if matches and #matches > 0 then
           file_path = matches[1]
         end
@@ -64,8 +65,10 @@ return {
           local in_frontmatter = false
           for i = 1, 20 do
             local line = f:read("*line")
-            if not line then break end
-            
+            if not line then
+              break
+            end
+
             local h1 = line:match("^#%s+(.+)$")
             if h1 then
               title = h1
@@ -177,7 +180,10 @@ return {
       -- Obtener la línea actual del cursor si el buffer está enfocado en la ventana actual
       local cursor_line = nil
       local current_win = vim.api.nvim_get_current_win()
-      if vim.api.nvim_win_is_valid(current_win) and vim.api.nvim_win_get_buf(current_win) == bufnr then
+      if
+        vim.api.nvim_win_is_valid(current_win)
+        and vim.api.nvim_win_get_buf(current_win) == bufnr
+      then
         cursor_line = vim.api.nvim_win_get_cursor(current_win)[1] - 1
       end
 
@@ -187,7 +193,8 @@ return {
       for line_idx, line in ipairs(lines) do
         local start_idx = 1
         while true do
-          local s, e, note_id = string.find(line, "%[%[([^|%]]+)%]%]", start_idx)
+          local s, e, note_id =
+            string.find(line, "%[%[([^|%]]+)%]%]", start_idx)
           if not s then
             break
           end
@@ -343,7 +350,14 @@ return {
     end
 
     vim.api.nvim_create_autocmd(
-      { "BufEnter", "BufWritePost", "TextChanged", "TextChangedI", "CursorMoved", "CursorMovedI" },
+      {
+        "BufEnter",
+        "BufWritePost",
+        "TextChanged",
+        "TextChangedI",
+        "CursorMoved",
+        "CursorMovedI",
+      },
       {
         group = vim.api.nvim_create_augroup(
           "ZkCitationsGroup",
@@ -385,7 +399,9 @@ return {
 
       -- Si encontramos la píldora bajo el cursor
       if target_citekey then
-        local bib_path = "/Users/fabsanh/Mesh/Bibliografía/" .. target_citekey .. ".md"
+        local bib_path = "/Users/fabsanh/Mesh/Bibliografía/"
+          .. target_citekey
+          .. ".md"
 
         if vim.fn.filereadable(bib_path) == 1 then
           -- El archivo existe: lo abrimos normal
@@ -453,7 +469,7 @@ return {
     vim.keymap.set(
       "n",
       "<leader>zd",
-      "<Cmd>ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal' }<CR>",
+      "<Cmd>ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }<CR>",
       { desc = "Zk Daily Note" }
     )
 

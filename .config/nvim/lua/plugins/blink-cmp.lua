@@ -21,6 +21,21 @@ return {
       ["<C-e>"] = { "hide", "fallback" }, -- Control + e (Exit) aborta y cierra el menú
     },
     completion = {
+      ghost_text = {
+        enabled = function()
+          if vim.bo.filetype == "markdown" then
+            local line = vim.api.nvim_get_current_line()
+            local col = vim.api.nvim_win_get_cursor(0)[2]
+            local before_cursor = line:sub(1, col)
+
+            local inside_wiki = before_cursor:match(".*%[%[[^%]]*$") ~= nil
+            local inside_zk = before_cursor:match(".*{{[^}]*$") ~= nil
+
+            return inside_wiki or inside_zk
+          end
+          return true
+        end,
+      },
       menu = {
         auto_show = function(ctx)
           -- Desactivar en buffers especiales (como terminales o ventanas de comandos)

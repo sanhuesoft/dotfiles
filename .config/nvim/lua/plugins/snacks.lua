@@ -40,14 +40,13 @@ return {
             icon = "󱓧 ",
             key = "d",
             desc = "Daily note",
-            action = ":ZkDaily",
+            action = ":ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }",
           },
           {
             icon = "󰓹 ",
             key = "t",
             desc = "Browse Tags",
-            -- 2. Corrección: faltaba cerrar la llave '}' del comando de Neovim
-            action = ":ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal' }",
+            action = ":ZkTags",
           },
         }
 
