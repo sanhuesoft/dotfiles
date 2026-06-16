@@ -1,0 +1,9 @@
+theme = Ayu
+font-family = ""
+title = " "
+# background-opacity = 0.95
+window-decoration = auto
+background-blur = true
+unfocused-split-opacity = 0.5
+macos-icon = custom
+macos-custom-icon = ~/.config/ghostty/ghostty-theme-icons/icons/ayu-dark/ayu-dark.icns
