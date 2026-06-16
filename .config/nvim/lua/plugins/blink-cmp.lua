@@ -53,6 +53,18 @@ return {
 
           return inside_wiki or inside_zk
         end,
+        draw = {
+          components = {
+            label = {
+              highlight = function(ctx)
+                if ctx.source_name == "Bibliografía" or ctx.source_id == "bibman" then
+                  return "ZkCitationMenu"
+                end
+                return "BlinkCmpLabel"
+              end,
+            },
+          },
+        },
       },
       list = {
         selection = {

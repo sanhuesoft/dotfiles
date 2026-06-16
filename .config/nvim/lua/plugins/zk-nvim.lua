@@ -115,6 +115,18 @@ return {
     }
     vim.api.nvim_set_hl(0, "ZkCitation", zk_hl)
 
+    -- Grupo de highlight para las citas en el menú de autocompletado (sin subrayado)
+    local zk_menu_hl = {
+      fg = "#f38ba8",
+      underline = false,
+      undercurl = false,
+      underdashed = false,
+      underdotted = false,
+      underdouble = false,
+      nocombine = true,
+    }
+    vim.api.nvim_set_hl(0, "ZkCitationMenu", zk_menu_hl)
+
     -- Grupo de highlight para los wikilinks renderizados (celeste)
     local wikilink_hl = {
       fg = "#89b4fa",
@@ -141,6 +153,7 @@ return {
       pattern = "*",
       callback = function()
         vim.api.nvim_set_hl(0, "ZkCitation", zk_hl)
+        vim.api.nvim_set_hl(0, "ZkCitationMenu", zk_menu_hl)
         vim.api.nvim_set_hl(0, "ZkWikilink", wikilink_hl)
         vim.api.nvim_set_hl(
           0,
@@ -158,6 +171,7 @@ return {
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if client and client.name == "zk" then
           vim.api.nvim_set_hl(0, "ZkCitation", zk_hl)
+          vim.api.nvim_set_hl(0, "ZkCitationMenu", zk_menu_hl)
           vim.api.nvim_set_hl(0, "ZkWikilink", wikilink_hl)
         end
       end,
