@@ -177,14 +177,13 @@ return {
         return
       end
 
-      -- Obtener la línea actual del cursor si el buffer está enfocado en la ventana actual
+      -- Obtener la línea actual del cursor buscando la ventana que muestra este buffer
       local cursor_line = nil
-      local current_win = vim.api.nvim_get_current_win()
-      if
-        vim.api.nvim_win_is_valid(current_win)
-        and vim.api.nvim_win_get_buf(current_win) == bufnr
-      then
-        cursor_line = vim.api.nvim_win_get_cursor(current_win)[1] - 1
+      for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+          cursor_line = vim.api.nvim_win_get_cursor(win)[1] - 1
+          break
+        end
       end
 
       vim.api.nvim_buf_clear_namespace(bufnr, wikilinks_ns, 0, -1)
@@ -203,30 +202,25 @@ return {
           local start_col = s - 1
           local end_col = e
 
-          -- Si el cursor está en esta línea, mostramos solo el icono y revelamos el texto raw.
-          -- En caso contrario, mostramos el icono y el título resuelto de la nota.
-          local display_text
-          if cursor_line and line_num == cursor_line then
-            display_text = "󰈔 "
-          else
+          -- Si el cursor está en esta línea, no aplicamos ocultamiento ni texto virtual.
+          -- Esto evita que el autocompletado y edición nativa choquen con el conceal del extmark.
+          if not (cursor_line and line_num == cursor_line) then
             local title = get_note_title(note_id)
-            display_text = "󰈔 " .. title
+            vim.api.nvim_buf_set_extmark(
+              bufnr,
+              wikilinks_ns,
+              line_num,
+              start_col,
+              {
+                end_col = end_col,
+                conceal = "",
+                virt_text = { { "󰈔 " .. title, "ZkWikilink" } },
+                virt_text_pos = "inline",
+                hl_mode = "replace",
+                priority = 201,
+              }
+            )
           end
-
-          vim.api.nvim_buf_set_extmark(
-            bufnr,
-            wikilinks_ns,
-            line_num,
-            start_col,
-            {
-              end_col = end_col,
-              conceal = "",
-              virt_text = { { display_text, "ZkWikilink" } },
-              virt_text_pos = "inline",
-              hl_mode = "replace",
-              priority = 201,
-            }
-          )
 
           start_idx = e + 1
         end
@@ -354,9 +348,8 @@ return {
         "BufEnter",
         "BufWritePost",
         "TextChanged",
-        "TextChangedI",
+        "InsertLeave",
         "CursorMoved",
-        "CursorMovedI",
       },
       {
         group = vim.api.nvim_create_augroup(
