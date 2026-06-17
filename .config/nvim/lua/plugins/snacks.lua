@@ -52,7 +52,7 @@ return {
 
         opts.dashboard.sections = {
           { section = "header" },
-          { section = "keys", gap = 1, padding = 1 },
+          { section = "keys", padding = 1 },
         }
       else
         opts.dashboard.preset.header = "                                                                        \n"
@@ -68,6 +68,37 @@ return {
           .. "                                                                        \n"
           .. "                                                                        "
       end
+      -- Define aquí solo los botones que tú quieras ver y en el orden que prefieras:
+      opts.dashboard.preset.keys = {
+        { icon = " ", key = "f", desc = "Find File", action = ":LazyFiles" },
+        {
+          icon = " ",
+          key = "n",
+          desc = "New File",
+          action = ":ene | startinsert",
+        },
+        { icon = " ", key = "g", desc = "Find Text", action = ":LiveGrep" },
+        {
+          icon = " ",
+          key = "r",
+          desc = "Recent Files",
+          action = ":RecentFiles",
+        },
+        { icon = " ", key = "c", desc = "Config", action = ":LazyConfig" },
+        {
+          icon = " ",
+          key = "s",
+          desc = "Restore Session",
+          action = [[lua require("persistence").load()]],
+        },
+        { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
+        { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+      }
+      opts.dashboard.sections = {
+        { section = "header" },
+        { section = "keys", padding = 1 },
+        { section = "recent_files", limit = 5, width = 40, padding = 1 },
+      }
       -- AQUÍ CREAMOS EL ALIAS: Crea el comando personalizado :Dash
       vim.api.nvim_create_user_command("Dash", function()
         Snacks.dashboard.open()
