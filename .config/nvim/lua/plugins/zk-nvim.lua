@@ -1,7 +1,6 @@
 -- Configuración del plugin zk-nvim y renderizado personalizado de citas Zk
 -- En este archivo se maneja la integración con zk y la estética de las referencias {{citekey}}
 return {
-  --- "zk-org/zk-nvim",
   "sanhuesoft/zk-nvim",
   name = "zk",
   opts = {
@@ -194,7 +193,10 @@ return {
       -- Obtener la línea actual del cursor buscando la ventana que muestra este buffer
       local cursor_line = nil
       for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-        if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+        if
+          vim.api.nvim_win_is_valid(win)
+          and vim.api.nvim_win_get_buf(win) == bufnr
+        then
           cursor_line = vim.api.nvim_win_get_cursor(win)[1] - 1
           break
         end
@@ -357,31 +359,36 @@ return {
       end)
     end
 
-    vim.api.nvim_create_autocmd(
-      {
-        "BufEnter",
-        "BufWritePost",
-        "TextChanged",
-        "InsertLeave",
-        "CursorMoved",
-      },
-      {
-        group = vim.api.nvim_create_augroup(
-          "ZkCitationsGroup",
-          { clear = true }
-        ),
-        pattern = "*.md",
-        callback = function(ev)
-          if ev.event == "BufWritePost" then
-            local note_id = vim.fn.fnamemodify(ev.file, ":t:r")
-            title_cache[note_id] = nil
-          end
-          highlight_citations(ev.buf)
-          highlight_wikilinks(ev.buf)
-          apply_nospell(ev.buf)
-        end,
-      }
-    )
+    -- Mapeos locales de buffer para auto-cerrar [[ y {{ en archivos markdown
+    -- Esto soluciona los problemas de autocompletado en la última línea del archivo
+    -- o entre dos líneas con texto, asegurando que la sintaxis siempre esté cerrada.
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "markdown",
+      callback = function()
+        vim.keymap.set("i", "[[", "[[]]<Left><Left>", { buffer = true, desc = "Auto-close wiki-link" })
+        vim.keymap.set("i", "{{", "{{}}<Left><Left>", { buffer = true, desc = "Auto-close citation" })
+      end,
+    })
+
+    vim.api.nvim_create_autocmd({
+      "BufEnter",
+      "BufWritePost",
+      "TextChanged",
+      "InsertLeave",
+      "CursorMoved",
+    }, {
+      group = vim.api.nvim_create_augroup("ZkCitationsGroup", { clear = true }),
+      pattern = "*.md",
+      callback = function(ev)
+        if ev.event == "BufWritePost" then
+          local note_id = vim.fn.fnamemodify(ev.file, ":t:r")
+          title_cache[note_id] = nil
+        end
+        highlight_citations(ev.buf)
+        highlight_wikilinks(ev.buf)
+        apply_nospell(ev.buf)
+      end,
+    })
     -- Abrir o crear nota bibliográfica desde una píldora {{citekey}}
     vim.keymap.set("n", "gB", function()
       local line = vim.api.nvim_get_current_line()
@@ -494,6 +501,14 @@ return {
       "<leader>zo",
       "<Cmd>ZkOrphans<CR>",
       { desc = "Zk Find Orphans" }
+    )
+
+    -- ZkIndex
+    vim.keymap.set(
+      "n",
+      "<leader>zi",
+      "<Cmd>ZkIndex<CR>",
+      { desc = "Zk Index" }
     )
 
     local zk = require("zk")

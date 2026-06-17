@@ -13,8 +13,24 @@ return {
       ["<C-Space>"] = { "show", "show_documentation", "hide" }, -- Invoca o esconde el menú
 
       -- NAVEGACIÓN NATIVA VIM
-      ["<C-n>"] = { "select_next", "fallback" }, -- Control + n va al siguiente resultado
-      ["<C-p>"] = { "select_prev", "fallback" }, -- Control + p va al resultado anterior
+      ["<C-n>"] = {
+        function(cmp)
+          if cmp.is_menu_visible() then
+            cmp.select_next()
+            return true
+          end
+        end,
+        "fallback",
+      },
+      ["<C-p>"] = {
+        function(cmp)
+          if cmp.is_menu_visible() then
+            cmp.select_prev()
+            return true
+          end
+        end,
+        "fallback",
+      },
 
       -- EL COMBO NATIVO COMPLETO
       ["<C-y>"] = { "select_and_accept", "fallback" }, -- Control + y (Yes) acepta la sugerencia
