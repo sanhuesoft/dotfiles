@@ -9,24 +9,8 @@ return {
       ["<C-Space>"] = { "show", "show_documentation", "hide" }, -- Invoca o esconde el menú
 
       -- NAVEGACIÓN NATIVA VIM
-      ["<C-n>"] = {
-        function(cmp)
-          if cmp.is_menu_visible() then
-            cmp.select_next()
-            return true
-          end
-        end,
-        "fallback",
-      },
-      ["<C-p>"] = {
-        function(cmp)
-          if cmp.is_menu_visible() then
-            cmp.select_prev()
-            return true
-          end
-        end,
-        "fallback",
-      },
+      ["<C-n>"] = { "select_next", "fallback" },
+      ["<C-p>"] = { "select_prev", "fallback" },
 
       -- EL COMBO NATIVO COMPLETO
       ["<C-y>"] = { "select_and_accept", "fallback" }, -- Control + y (Yes) acepta la sugerencia
@@ -85,15 +69,16 @@ return {
           score_offset = 100,
         },
         lsp = {
-          -- Aquí ya estás forzando a que acepte espacios y saltos de línea para el LSP,
-          -- lo cual suple por completo lo que intentabas hacer con 'blocked_trigger_characters'
-          override = {
-            get_trigger_characters = function(self)
-              local trigger_characters = self:get_trigger_characters()
-              vim.list_extend(trigger_characters, { " ", "\n", "\t" })
-              return trigger_characters
-            end,
-          },
+          transform_items = function(ctx, items)
+            local seen = {}
+            return vim.tbl_filter(function(item)
+              if seen[item.label] then
+                return false
+              end
+              seen[item.label] = true
+              return true
+            end, items)
+          end,
         },
       },
     },

@@ -321,6 +321,7 @@ return {
       callback = function()
         vim.keymap.set("i", "[[", "[[]]<Left><Left>", { buffer = true, desc = "Auto-close wiki-link" })
         vim.keymap.set("i", "{{", "{{}}<Left><Left>", { buffer = true, desc = "Auto-close citation" })
+
       end,
     })
 
