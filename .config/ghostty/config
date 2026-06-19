@@ -5,5 +5,6 @@ title = " "
 window-decoration = auto
 background-blur = true
 unfocused-split-opacity = 0.5
+mouse-hide-while-typing = true
 macos-icon = custom
 macos-custom-icon = ~/.config/ghostty/ghostty-theme-icons/icons/ayu-dark/ayu-dark.icns
