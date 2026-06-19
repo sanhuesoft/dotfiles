@@ -1,10 +1,18 @@
+# Tema
 theme = Ayu
 font-family = ""
+
+# Ventana
 title = " "
-# background-opacity = 0.95
 window-decoration = auto
 background-blur = true
 unfocused-split-opacity = 0.5
-mouse-hide-while-typing = true
 macos-icon = custom
 macos-custom-icon = ~/.config/ghostty/ghostty-theme-icons/icons/ayu-dark/ayu-dark.icns
+
+# Mouse
+mouse-hide-while-typing = true
+
+# Keybindings
+keybind = cmd+h=goto_split:left
+keybind = cmd+l=goto_split:right

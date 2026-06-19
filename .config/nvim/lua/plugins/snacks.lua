@@ -98,14 +98,8 @@ return {
         }
       end
 
-      -- Crea el comando personalizado :Dash
-      vim.api.nvim_create_user_command("Dash", function()
-        Snacks.dashboard.open()
-      end, {})
-
       -- CRÍTICO: Retorna las opts en Lazy.nvim
       return opts
     end,
   },
-  { "goolord/alpha-nvim", enabled = false },
 }
