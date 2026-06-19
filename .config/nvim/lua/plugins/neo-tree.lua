@@ -7,13 +7,51 @@ return {
     "nvim-tree/nvim-web-devicons",
   },
   keys = {
-    { "<C-e>", "<cmd>Neotree filesystem reveal left<cr>", desc = "Neotree reveal" },
+    { "<C-e>", "<cmd>Neotree filesystem reveal left<cr>", desc = "Neotree reveal in explorer" },
   },
-  config = function()
-    require("neo-tree").setup({
-      window = {
-        width = 30,
+  opts = {
+    popup_border_style = "rounded", -- Estilo de borde: "double", "rounded", "single", "solid"
+    -- use_popups_for_input = false, -- Descomenta si prefieres usar vim.ui.input/vim.fn.confirm (que se integra con noice.nvim)
+    window = {
+      width = 30,
+    },
+    filesystem = {
+      commands = {
+        delete = function(state)
+          local node = state.tree:get_node()
+          local name = node.name
+          if #name > 25 then
+            name = string.sub(name, 1, 22) .. "..."
+          end
+          
+          local fs_actions = require("neo-tree.sources.filesystem.lib.fs_actions")
+          local NuiInput = require("nui.input")
+          local popups = require("neo-tree.ui.popups")
+          
+          local popup_options = popups.popup_options("Delete '" .. name .. "'?", 40, {
+            size = { width = 40 },
+          })
+          
+          local input = NuiInput(popup_options, {
+            prompt = " y/n: ",
+            default_value = "y", -- 'y' viene escrito por defecto, listo para dar Enter
+            on_submit = function(value)
+              if value == "y" or value == "Y" then
+                local utils = require("neo-tree.utils")
+                local refresh = function()
+                  require("neo-tree.sources.filesystem")._navigate_internal(state, nil, nil, nil, false)
+                end
+                fs_actions.delete_node(node.path, utils.wrap(refresh, state), true)
+              end
+            end,
+          })
+          
+          input:mount()
+          input:map("i", "<esc>", function() input:unmount() end, { noremap = true })
+          input:map("n", "<esc>", function() input:unmount() end, { noremap = true })
+          input:map("n", "q", function() input:unmount() end, { noremap = true })
+        end,
       },
-    })
-  end,
+    },
+  },
 }

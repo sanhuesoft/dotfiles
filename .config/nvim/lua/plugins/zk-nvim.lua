@@ -50,8 +50,7 @@ return {
       end
 
       if not file_path then
-        local matches =
-          vim.fn.globpath(vault_path, "**/" .. note_id .. ".md", true, true)
+        local matches = vim.fn.globpath(vault_path, "**/" .. note_id .. ".md", true, true)
         if matches and #matches > 0 then
           file_path = matches[1]
         end
@@ -140,11 +139,7 @@ return {
 
     -- Grupo de highlight para las llaves contenedoras {{ y }}
     -- Utiliza un color gris oscuro para atenuar o esconder visualmente las llaves
-    vim.api.nvim_set_hl(
-      0,
-      "ZkCitationBrackets",
-      { fg = "#585b70", nocombine = true }
-    )
+    vim.api.nvim_set_hl(0, "ZkCitationBrackets", { fg = "#585b70", nocombine = true })
 
     -- Escuchar cambios de tema (ColorScheme) para reinstaurar los highlights
     -- y evitar que nuevos temas pisen los colores específicos
@@ -154,11 +149,7 @@ return {
         vim.api.nvim_set_hl(0, "ZkCitation", zk_hl)
         vim.api.nvim_set_hl(0, "ZkCitationMenu", zk_menu_hl)
         vim.api.nvim_set_hl(0, "ZkWikilink", wikilink_hl)
-        vim.api.nvim_set_hl(
-          0,
-          "ZkCitationBrackets",
-          { fg = "#585b70", nocombine = true }
-        )
+        vim.api.nvim_set_hl(0, "ZkCitationBrackets", { fg = "#585b70", nocombine = true })
       end,
     })
 
@@ -193,10 +184,7 @@ return {
       -- Obtener la línea actual del cursor buscando la ventana que muestra este buffer
       local cursor_line = nil
       for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-        if
-          vim.api.nvim_win_is_valid(win)
-          and vim.api.nvim_win_get_buf(win) == bufnr
-        then
+        if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
           cursor_line = vim.api.nvim_win_get_cursor(win)[1] - 1
           break
         end
@@ -208,8 +196,7 @@ return {
       for line_idx, line in ipairs(lines) do
         local start_idx = 1
         while true do
-          local s, e, note_id =
-            string.find(line, "%[%[([^|%]]+)%]%]", start_idx)
+          local s, e, note_id = string.find(line, "%[%[([^|%]]+)%]%]", start_idx)
           if not s then
             break
           end
@@ -222,20 +209,14 @@ return {
           -- Esto evita que el autocompletado y edición nativa choquen con el conceal del extmark.
           if not (cursor_line and line_num == cursor_line) then
             local title = get_note_title(note_id)
-            vim.api.nvim_buf_set_extmark(
-              bufnr,
-              wikilinks_ns,
-              line_num,
-              start_col,
-              {
-                end_col = end_col,
-                conceal = "",
-                virt_text = { { "󰈔 " .. title, "ZkWikilink" } },
-                virt_text_pos = "inline",
-                hl_mode = "replace",
-                priority = 201,
-              }
-            )
+            vim.api.nvim_buf_set_extmark(bufnr, wikilinks_ns, line_num, start_col, {
+              end_col = end_col,
+              conceal = "",
+              virt_text = { { "󰈔 " .. title, "ZkWikilink" } },
+              virt_text_pos = "inline",
+              hl_mode = "replace",
+              priority = 201,
+            })
           end
 
           start_idx = e + 1
@@ -262,8 +243,7 @@ return {
         local start_idx = 1
         while true do
           -- Buscar citas con formato especial que incluyan páginas o rangos (ej. {{Key:25-27}}, {{Key.etal2023:25}})
-          local s, e, full =
-            string.find(line, "{{([%w%-_.:]+-?[%d]*)}}", start_idx)
+          local s, e, full = string.find(line, "{{([%w%-_.:]+-?[%d]*)}}", start_idx)
           if not s then
             -- Búsqueda de respaldo más general para capturar citekeys simples
             s, e, full = string.find(line, "{{([%w%-_.:]+)}}", start_idx)
@@ -285,65 +265,41 @@ return {
           local close_bracket_end = e -- Fin del '}}' (exclusivo)
 
           -- Llaves de apertura: Ocultar '{{' e inyectar un icono de libro inline (󰂺)
-          vim.api.nvim_buf_set_extmark(
-            bufnr,
-            namespace,
-            line_num,
-            open_bracket_start,
-            {
-              end_col = open_bracket_end,
-              hl_group = "ZkCitationBrackets",
-              conceal = "",
-              virt_text = { { "󰂺 ", "ZkCitation" } },
-              virt_text_pos = "inline",
-              hl_mode = "replace",
-              priority = 200,
-            }
-          )
+          vim.api.nvim_buf_set_extmark(bufnr, namespace, line_num, open_bracket_start, {
+            end_col = open_bracket_end,
+            hl_group = "ZkCitationBrackets",
+            conceal = "",
+            virt_text = { { "󰂺 ", "ZkCitation" } },
+            virt_text_pos = "inline",
+            hl_mode = "replace",
+            priority = 200,
+          })
 
           -- Clave de cita: Aplicar estilo visual de ZkCitation sin subrayar el icono de libro
-          vim.api.nvim_buf_set_extmark(
-            bufnr,
-            namespace,
-            line_num,
-            open_bracket_end,
-            {
-              end_col = citekey_end,
-              hl_group = "ZkCitation",
-              hl_mode = "replace",
-              priority = 200,
-            }
-          )
+          vim.api.nvim_buf_set_extmark(bufnr, namespace, line_num, open_bracket_end, {
+            end_col = citekey_end,
+            hl_group = "ZkCitation",
+            hl_mode = "replace",
+            priority = 200,
+          })
 
           -- Números de página (si existen): Ocultar el sufijo ':páginas' de la vista normal
           if pages_part then
-            vim.api.nvim_buf_set_extmark(
-              bufnr,
-              namespace,
-              line_num,
-              citekey_end,
-              {
-                end_col = close_bracket_start,
-                hl_group = "ZkCitationBrackets",
-                conceal = "",
-                priority = 200,
-              }
-            )
-          end
-
-          -- Llaves de cierre: Ocultar '}}' por completo
-          vim.api.nvim_buf_set_extmark(
-            bufnr,
-            namespace,
-            line_num,
-            close_bracket_start,
-            {
-              end_col = close_bracket_end,
+            vim.api.nvim_buf_set_extmark(bufnr, namespace, line_num, citekey_end, {
+              end_col = close_bracket_start,
               hl_group = "ZkCitationBrackets",
               conceal = "",
               priority = 200,
-            }
-          )
+            })
+          end
+
+          -- Llaves de cierre: Ocultar '}}' por completo
+          vim.api.nvim_buf_set_extmark(bufnr, namespace, line_num, close_bracket_start, {
+            end_col = close_bracket_end,
+            hl_group = "ZkCitationBrackets",
+            conceal = "",
+            priority = 200,
+          })
           start_idx = e + 1
         end
       end
@@ -353,9 +309,7 @@ return {
     -- ortográficos (subrayado rojo de spell) definiendo una regla de sintaxis con @NoSpell.
     local function apply_nospell(bufnr)
       vim.api.nvim_buf_call(bufnr, function()
-        vim.cmd(
-          [[syntax match ZkCitationNoSpell /{{[[:alnum:]_.\:-]\+}}/ contains=@NoSpell]]
-        )
+        vim.cmd([[syntax match ZkCitationNoSpell /{{[[:alnum:]_.\:-]\+}}/ contains=@NoSpell]])
       end)
     end
 
@@ -413,9 +367,7 @@ return {
 
       -- Si encontramos la píldora bajo el cursor
       if target_citekey then
-        local bib_path = "/Users/fabsanh/Mesh/Bibliografía/"
-          .. target_citekey
-          .. ".md"
+        local bib_path = "/Users/fabsanh/Mesh/Bibliografía/" .. target_citekey .. ".md"
 
         if vim.fn.filereadable(bib_path) == 1 then
           -- El archivo existe: lo abrimos normal
@@ -423,9 +375,7 @@ return {
         else
           -- El archivo NO existe: lanzamos la ventana emergente de LazyVim
           vim.ui.select({ "Sí, crear", "No, cancelar" }, {
-            prompt = "La referencia '"
-              .. target_citekey
-              .. "' no existe. ¿Deseas crearla?",
+            prompt = "La referencia '" .. target_citekey .. "' no existe. ¿Deseas crearla?",
           }, function(choice)
             -- Este bloque se ejecuta cuando elijas una opción en el menú flotante
             if choice == "Sí, crear nota" then
@@ -439,10 +389,7 @@ return {
           end)
         end
       else
-        vim.notify(
-          "No hay una cita bibliográfica bajo el cursor.",
-          vim.log.levels.INFO
-        )
+        vim.notify("No hay una cita bibliográfica bajo el cursor.", vim.log.levels.INFO)
       end
     end, { desc = "ZkZettel: Abrir/Crear nota de Bibliografía" })
 
@@ -458,20 +405,10 @@ return {
       { desc = "Zk Search Notes" }
     )
     -- Find notes matching the current visual selection
-    vim.keymap.set(
-      "v",
-      "<leader>zs",
-      ":'<,'>ZkMatch<CR>",
-      { desc = "Zk Match Selection" }
-    )
+    vim.keymap.set("v", "<leader>zs", ":'<,'>ZkMatch<CR>", { desc = "Zk Match Selection" })
 
     -- Find notes by tags
-    vim.keymap.set(
-      "n",
-      "<leader>zt",
-      "<Cmd>ZkTags<CR>",
-      { desc = "Zk Browse Tags" }
-    )
+    vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "Zk Browse Tags" })
     vim.keymap.set(
       "n",
       "<leader>zf",
@@ -496,20 +433,22 @@ return {
     )
 
     -- ZkOrphans Shortcut
-    vim.keymap.set(
-      "n",
-      "<leader>zo",
-      "<Cmd>ZkOrphans<CR>",
-      { desc = "Zk Find Orphans" }
-    )
+    vim.keymap.set("n", "<leader>zo", "<Cmd>ZkOrphans<CR>", { desc = "Zk Find Orphans" })
 
     -- ZkIndex
-    vim.keymap.set(
-      "n",
-      "<leader>zi",
-      "<Cmd>ZkIndex<CR>",
-      { desc = "Zk Index" }
-    )
+    vim.keymap.set("n", "<leader>zI", "<Cmd>ZkIndex<CR>", { desc = "Zk Index" })
+
+    -- ZkInsert
+    vim.keymap.set("n", "<leader>zi", "<Cmd>ZkInsertLink<CR>", { desc = "Zk Insert Link" })
+
+    -- ZkNotes by created date
+    vim.keymap.set("n", "<leader>zR", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", { desc = "Zk Sort by Modified" })
+
+    -- ZkNotes by modified date
+    vim.keymap.set("n", "<leader>zr", "<Cmd>ZkNotes { sort = { 'created' } }<CR>", { desc = "Zk Sort by Created" })
+
+    -- ZkDash
+    vim.keymap.set("n", "<leader>zD", "<Cmd>Dash<CR>", { desc = "Zk Dash" })
 
     local zk = require("zk")
     local commands = require("zk.commands")

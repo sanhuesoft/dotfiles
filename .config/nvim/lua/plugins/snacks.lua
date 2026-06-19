@@ -82,11 +82,11 @@ return {
           .. "                                                                        "
         -- Define aquí solo los botones que tú quieras ver y en el orden que prefieras:
         opts.dashboard.preset.keys = {
-          { icon = " ", key = "f", desc = "Find File", action = ":LazyFiles" },
+          { icon = " ", key = "f", desc = "Find File", action = ":FzfLua files" },
           { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-          { icon = " ", key = "g", desc = "Find Text", action = ":LiveGrep" },
-          { icon = " ", key = "r", desc = "Recent Files", action = ":RecentFiles" },
-          { icon = " ", key = "c", desc = "Config", action = ":LazyConfig" },
+          { icon = " ", key = "g", desc = "Find Text", action = ":FzfLua live_grep" },
+          { icon = " ", key = "r", desc = "Recent Files", action = ":FzfLua oldfiles" },
+          { icon = " ", key = "c", desc = "Config", action = ":FzfLua files cwd=~/.config/nvim" },
           { icon = " ", key = "s", desc = "Restore Session", action = [[lua require("persistence").load()]] },
           { icon = "󰒲 ", key = "l", desc = "Lazy", action = ":Lazy" },
           { icon = " ", key = "q", desc = "Quit", action = ":qa" },

@@ -52,6 +52,10 @@ return {
           return true
         end,
       },
+      trigger = {
+        -- Disable the default behavior that blocks spaces, tabs, and newlines
+        blocked_trigger_characters = {},
+      },
       menu = {
         auto_show = function(ctx)
           -- Desactivar en buffers especiales (como terminales o ventanas de comandos)
@@ -95,6 +99,16 @@ return {
           module = "blink.cmp.sources.bibman",
           name = "Bibliografía",
           score_offset = 100,
+        },
+        lsp = {
+          -- Allow space to trigger suggestions in your LSP
+          override = {
+            get_trigger_characters = function(self)
+              local trigger_characters = self:get_trigger_characters()
+              vim.list_extend(trigger_characters, { ' ', '\n', '\t' })
+              return trigger_characters
+            end,
+          },
         },
       },
     },
