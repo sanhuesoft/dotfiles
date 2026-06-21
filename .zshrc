@@ -42,6 +42,16 @@ alias 7z='7zz'
 alias nvim-conf='cd ~/.config/nvim'
 alias clean='~/Proyectos/chrome_cleaner/chrome_cleaner.sh'
 alias bi='brew install'
+alias vps='TERM=xterm-256color ssh root@86.48.16.142'
+
+# Aliases git
+alias gs='git status'
+alias ga='git add .'
+alias gp='git push'
+gc() {
+  git commit -m "$1"
+}
+alias gcam='git commit --ammend'
 
 # Función yt-mp3
 yt-mp3() {
