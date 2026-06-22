@@ -1,4 +1,5 @@
 # Plugins
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="underline"
 source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
@@ -42,7 +43,8 @@ alias 7z='7zz'
 alias nvim-conf='cd ~/.config/nvim'
 alias clean='~/Proyectos/chrome_cleaner/chrome_cleaner.sh'
 alias bi='brew install'
-alias vps='TERM=xterm-256color ssh root@86.48.16.142'
+# alias vps='TERM=xterm-256color ssh root@86.48.16.142'
+alias vps='ssh -i ~/.ssh/id_ed25519_vps root@86.48.16.142'
 
 # Aliases git
 alias gs='git status'
