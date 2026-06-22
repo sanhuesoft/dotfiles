@@ -27,38 +27,44 @@ export HOMEBREW_NO_ENV_HINTS=1
 # Configuro zoxide
 eval "$(zoxide init zsh)"
 
-# Aliases personales
+## Acceso rápido
 alias emdl='cd ~/Proyectos/emdl && python3 emdl.py'
-alias s='source ~/.zshrc && clear'
 alias zsh-conf='nvim ~/.zshrc'
-alias M='cd ~/Mesh/; nvim'
-alias R='cd ~/Obsidian/Replica; nvim'
-alias l='ls -lG'
-alias la='ls -la'
-alias cl='clear'
-alias nrd='npm run dev'
-alias nrb='npm run build'
-alias nv='nvim'
-alias 7z='7zz'
+alias s='source ~/.zshrc && clear'
 alias nvim-conf='cd ~/.config/nvim'
 alias clean='~/Proyectos/chrome_cleaner/chrome_cleaner.sh'
-alias bi='brew install'
-# alias vps='TERM=xterm-256color ssh root@86.48.16.142'
 alias vps='ssh -i ~/.ssh/id_ed25519_vps root@86.48.16.142'
 
-# Aliases git
+# NPM
+alias nrd='npm run dev'
+alias nrb='npm run build'
+
+## Markdown Vaults & nvim
+alias M='cd ~/Mesh/; nvim'
+alias R='cd ~/Obsidian/Replica; nvim'
+
+# Aliases for managing files and directories
+alias ls='eza -lh'
+alias la='eza -lha'
+alias tree='eza -T'
+alias cat='bat'
+
+# Aliases for git
 alias gs='git status'
 alias ga='git add .'
 alias gp='git push'
-gc() {
-  git commit -m "$1"
-}
-alias gcam='git commit --ammend'
+alias gc='git commit -m'
+alias gcam='git commit --amend'
 
-# Función yt-mp3
-yt-mp3() {
-    yt-dlp -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata "$1"
-}
+# YT-DLP para descargar en mp3
+alias yt-mp3='yt-dlp -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata'
+
+# Otros aliases
+alias cl='clear'
+alias nv='nvim'
+alias 7z='7zz'
+alias bi='brew install'
+alias cd='z'
 
 # Bindings para plugins de ZSH
 bindkey '^[[A' history-substring-search-up
