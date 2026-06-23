@@ -1,11 +1,12 @@
 # Plugins
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="underline"
-source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+# source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
 
-# Configurar fzf key bindings
+# Configuración de fzf
 source <(fzf --zsh)
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
 
 # Oh My Posh
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
