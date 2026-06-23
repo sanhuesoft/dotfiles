@@ -60,8 +60,8 @@ alias gcam='git commit --amend'
 alias yt-mp3='yt-dlp -x --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata'
 
 # Otros aliases
-alias cl='clear'
-alias nv='nvim'
+alias c='clear'
+alias n='nvim'
 alias 7z='7zz'
 alias bi='brew install'
 alias cd='z'
