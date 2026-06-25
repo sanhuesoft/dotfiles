@@ -1,5 +1,5 @@
 # Plugins
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="underline"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8,underline"
 source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Configuración de fzf
