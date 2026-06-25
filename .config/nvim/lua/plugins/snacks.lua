@@ -8,66 +8,66 @@ return {
       opts.bigfile = { enabled = true }
 
       -- Solo si es ZK
-      if is_zk_dir then
-        opts.dashboard = opts.dashboard or {}
-        opts.dashboard.preset = opts.dashboard.preset or {}
+      -- if is_zk_dir then
+      --   opts.dashboard = opts.dashboard or {}
+      --   opts.dashboard.preset = opts.dashboard.preset or {}
 
-        vim.api.nvim_set_hl(0, "MiHeaderColor", {
-          fg = "#ffffff", -- Cambia este código HEX por el color que tú quieras
-          bold = true,
-        })
+      --   vim.api.nvim_set_hl(0, "MiHeaderColor", {
+      --     fg = "#ffffff", -- Cambia este código HEX por el color que tú quieras
+      --     bold = true,
+      --   })
 
-        opts.dashboard.preset.header = ""
-          .. "░█████████ ░██     ░██ \n"
-          .. "      ░██  ░██    ░██  \n"
-          .. "     ░██   ░██   ░██   \n"
-          .. "   ░███    ░███████    \n"
-          .. "  ░██      ░██   ░██   \n"
-          .. " ░██       ░██    ░██  \n"
-          .. "░█████████ ░██     ░██ \n"
-          .. "                       \n"
-          .. "                       "
+      --   opts.dashboard.preset.header = ""
+      --     .. "░█████████ ░██     ░██ \n"
+      --     .. "      ░██  ░██    ░██  \n"
+      --     .. "     ░██   ░██   ░██   \n"
+      --     .. "   ░███    ░███████    \n"
+      --     .. "  ░██      ░██   ░██   \n"
+      --     .. " ░██       ░██    ░██  \n"
+      --     .. "░█████████ ░██     ░██ \n"
+      --     .. "                       \n"
+      --     .. "                       "
 
-        opts.dashboard.preset.keys = {
-          {
-            icon = "󱪝 ",
-            key = "N",
-            desc = "New Note",
-            action = ":ZkNew",
-          },
-          {
-            icon = " ",
-            key = "n",
-            desc = "Find Note",
-            action = ":ZkNotes",
-          },
-          {
-            icon = " ",
-            key = "o",
-            desc = "Find orphans",
-            action = ":ZkOrphans",
-          },
-          {
-            icon = "󱓧 ",
-            key = "d",
-            desc = "Daily note",
-            action = ":ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }",
-          },
-          {
-            icon = "󰓹 ",
-            key = "t",
-            desc = "Browse Tags",
-            action = ":ZkTags",
-          },
-        }
+      --   opts.dashboard.preset.keys = {
+      --     {
+      --       icon = "󱪝 ",
+      --       key = "N",
+      --       desc = "New Note",
+      --       action = ":ZkNew",
+      --     },
+      --     {
+      --       icon = " ",
+      --       key = "n",
+      --       desc = "Find Note",
+      --       action = ":ZkNotes",
+      --     },
+      --     {
+      --       icon = " ",
+      --       key = "o",
+      --       desc = "Find orphans",
+      --       action = ":ZkOrphans",
+      --     },
+      --     {
+      --       icon = "󱓧 ",
+      --       key = "d",
+      --       desc = "Daily note",
+      --       action = ":ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }",
+      --     },
+      --     {
+      --       icon = "󰓹 ",
+      --       key = "t",
+      --       desc = "Browse Tags",
+      --       action = ":ZkTags",
+      --     },
+      --   }
 
-        opts.dashboard.sections = {
-          { section = "header" },
-          { section = "keys", padding = 1 },
-        }
+      --   opts.dashboard.sections = {
+      --     { section = "header" },
+      --     { section = "keys", padding = 1 },
+      --   }
 
       -- Ajustes para el resto de directorios
-      else
+      -- else
         opts.dashboard.preset.header = "                                                                        \n"
           .. "                                                                        \n"
           .. "                                                                      \n"
@@ -96,7 +96,7 @@ return {
           { section = "keys", padding = 1 },
           { section = "recent_files", limit = 5, width = 40, padding = 1 },
         }
-      end
+      --end
 
       -- CRÍTICO: Retorna las opts en Lazy.nvim
       return opts

@@ -1,0 +1,2 @@
+ENTRY "/sftp://root@86.48.16.142/" URL "/sftp://root@86.48.16.142/"
+ENTRY "/sftp://root@86.48.16.142/var/lib/transmission-daemon/downloads/complete" URL "/sftp://root@86.48.16.142/var/lib/transmission-daemon/downloads/complete"

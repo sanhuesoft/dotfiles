@@ -394,69 +394,122 @@ return {
       end
     end, { desc = "ZkZettel: Abrir/Crear nota de Bibliografía" })
 
-    -- Normal mode mappings
-    -- Browse all notes
-    vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNotes<CR>", { desc = "Zk Notes" })
+  -- =============================================================================
+  -- 0. CONFIGURACIÓN Y COMANDOS PERSONALIZADOS
+  -- =============================================================================
+  local zk = require("zk")
+  local commands = require("zk.commands")
 
-    -- Find notes based on a search term
-    vim.keymap.set(
-      "n",
-      "<leader>zs",
-      "<Cmd>ZkNotes { match = { vim.fn.input('Search: ') } }<CR>",
-      { desc = "Zk Search Notes" }
-    )
-    -- Find notes matching the current visual selection
-    vim.keymap.set("v", "<leader>zs", ":'<,'>ZkMatch<CR>", { desc = "Zk Match Selection" })
+  -- Registra el comando personalizado para buscar notas huérfanas
+  commands.add("ZkOrphans", function(options)
+    options = vim.tbl_extend("force", { orphan = true }, options or {})
+    zk.edit(options, { title = "Zk Orphans" })
+  end)
 
-    -- Find notes by tags
-    vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "Zk Browse Tags" })
-    vim.keymap.set(
-      "n",
-      "<leader>zf",
-      "<Cmd>ZkNotes { tags = { vim.fn.input('Tag: ') } }<CR>",
-      { desc = "Zk Find by Tag" }
-    )
+  -- =============================================================================
+  -- KEYMAPS PARA ZK (NOTE-TAKING)
+  -- =============================================================================
 
-    -- Daily note actions
-    vim.keymap.set(
-      "n",
-      "<leader>zd",
-      "<Cmd>ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }<CR>",
-      { desc = "Zk Daily Note" }
-    )
+  --------------------------------------------------------------------------------
+  -- 1. Creación de Notas
+  --------------------------------------------------------------------------------
 
-    -- Creation shortcuts
-    vim.keymap.set(
-      "n",
-      "<leader>zN",
-      "<Cmd>ZkNew { title = vim.fn.input('Note Title: ') }<CR>",
-      { desc = "Zk New Note" }
-    )
+  -- Crear una nota general solicitando un título al usuario (Con validación)
+  vim.keymap.set("n", "<leader>zN", function()
+    local title = vim.fn.input('Note Title: ')
+    if title ~= "" then
+      require("zk").new({ title = title })
+    end
+  end, { desc = "Zk New Note" })
 
-    -- ZkOrphans Shortcut
-    vim.keymap.set("n", "<leader>zo", "<Cmd>ZkOrphans<CR>", { desc = "Zk Find Orphans" })
+  -- Crear la nota diaria para el día de hoy con una plantilla predefinida
+  vim.keymap.set(
+    "n",
+    "<leader>zd",
+    "<Cmd>ZkNew { title = os.date('%Y-%m-%d'), dir = 'Journal', template = 'journal.md' }<CR>",
+    { desc = "Zk Today's Daily Note" }
+  )
 
-    -- ZkIndex
-    vim.keymap.set("n", "<leader>zI", "<Cmd>ZkIndex<CR>", { desc = "Zk Index" })
+  -- Crear una nota diaria para una fecha personalizada (ej. yyyymmdd)
+  vim.keymap.set("n", "<leader>zD", function()
+    local title = vim.fn.input('Date (yyyymmdd): ')
+    if title ~= "" then
+      require("zk").new({
+        group = "journal",
+        dir = "Journal",
+        title = title,
+        extension = "md"
+      })
+    end
+  end, { desc = "Zk New Daily Note" })
 
-    -- ZkInsert
-    vim.keymap.set("n", "<leader>zi", "<Cmd>ZkInsertLink<CR>", { desc = "Zk Insert Link" })
+  -- Crear una nota bibliográfica dentro de la carpeta específica
+  vim.keymap.set("n", "<leader>zB", function()
+    local title = vim.fn.input('Bibnote Title (AuthorYear): ')
+    if title ~= "" then
+      require("zk").new({
+        group = "bibliography",
+        dir = "Bibliografía",
+        title = title,
+        extension = "md"
+      })
+    end
+  end, { desc = "Zk New Bibnote" })
 
-    -- ZkNotes by created date
-    vim.keymap.set("n", "<leader>zR", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", { desc = "Zk Sort by Modified" })
+  --------------------------------------------------------------------------------
+  -- 2. Búsqueda y Filtrado
+  --------------------------------------------------------------------------------
 
-    -- ZkNotes by modified date
-    vim.keymap.set("n", "<leader>zr", "<Cmd>ZkNotes { sort = { 'created' } }<CR>", { desc = "Zk Sort by Created" })
+  -- Buscar notas que contengan un término de texto ingresado (Con validación)
+  vim.keymap.set("n", "<leader>zs", function()
+    local search = vim.fn.input('Search: ')
+    if search ~= "" then
+      require("zk").edit({ match = { search } })
+    end
+  end, { desc = "Zk Search Notes" })
 
-    -- ZkDash
-    vim.keymap.set("n", "<leader>zD", "<Cmd>Dash<CR>", { desc = "Zk Dash" })
+  -- Buscar notas que coincidan exactamente con el texto seleccionado en modo Visual
+  vim.keymap.set("v", "<leader>zs", ":'<,'>ZkMatch<CR>", { desc = "Zk Match Selection" })
 
-    local zk = require("zk")
-    local commands = require("zk.commands")
+  -- Filtrar y buscar notas que contengan una etiqueta específica (Con validación)
+  vim.keymap.set("n", "<leader>zf", function()
+    local tag = vim.fn.input('Tag: ')
+    if tag ~= "" then
+      require("zk").edit({ tags = { tag } })
+    end
+  end, { desc = "Zk Find by Tag" })
 
-    commands.add("ZkOrphans", function(options)
-      options = vim.tbl_extend("force", { orphan = true }, options or {})
-      zk.edit(options, { title = "Zk Orphans" })
-    end)
+  -- Buscar notas huérfanas (aquellas que no tienen enlaces entrantes ni salientes)
+  vim.keymap.set("n", "<leader>zo", "<Cmd>ZkOrphans<CR>", { desc = "Zk Find Orphans" })
+
+  --------------------------------------------------------------------------------
+  -- 3. Navegación, Listado y Ordenación
+  --------------------------------------------------------------------------------
+
+  -- Examinar/listar todas las notas del directorio de trabajo
+  vim.keymap.set("n", "<leader>zn", "<Cmd>ZkNotes<CR>", { desc = "Zk Notes" })
+
+  -- Listar y navegar por todas las etiquetas (tags) disponibles
+  vim.keymap.set("n", "<leader>zt", "<Cmd>ZkTags<CR>", { desc = "Zk Browse Tags" })
+
+  -- Listar todas las notas ordenadas por su fecha de modificación
+  vim.keymap.set("n", "<leader>zR", "<Cmd>ZkNotes { sort = { 'modified' } }<CR>", { desc = "Zk Sort by Modified" })
+
+  -- Listar todas las notas ordenadas por su fecha de creación
+  vim.keymap.set("n", "<leader>zr", "<Cmd>ZkNotes { sort = { 'created' } }<CR>", { desc = "Zk Sort by Created" })
+
+  --------------------------------------------------------------------------------
+  -- 4. Utilidades del Sistema e Indexación
+  --------------------------------------------------------------------------------
+
+  -- Insertar interbúsqueda de un enlace (link) hacia otra nota en la posición del cursor
+  vim.keymap.set("n", "<leader>zi", "<Cmd>ZkInsertLink<CR>", { desc = "Zk Insert Link" })
+
+  -- Forzar la indexación manual de zk para actualizar los enlaces y metadatos
+  vim.keymap.set("n", "<leader>zI", "<Cmd>ZkIndex<CR>", { desc = "Zk Index" })
+
+  -- Insertar referencia bibliográfica del estilo {{citekey}} en la posición del cursor
+  vim.keymap.set("n", "<leader>zc", "<Cmd>ZkInsertCite<CR>", { desc = "Zk Insert Citation" })
+
   end,
 }
