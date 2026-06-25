@@ -19,3 +19,18 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufReadPost" }, {
     end
   end,
 })
+
+-- Crear un grupo para organizar nuestros autocomandos de Copilot
+local copilot_deny_group = vim.api.nvim_create_augroup("CopilotDeny", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+  group = copilot_deny_group,
+  -- Reemplaza con los patrones de las carpetas que quieras bloquear
+  pattern = {
+    "~/Mesh/**",
+  },
+  callback = function()
+    -- Desactiva Copilot globalmente o para el buffer actual al entrar a estas rutas
+    vim.b.copilot_disabled = true
+  end,
+})

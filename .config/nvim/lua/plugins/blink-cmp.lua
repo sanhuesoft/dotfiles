@@ -18,15 +18,10 @@ return {
     },
     completion = {
       ghost_text = {
-        -- Nota: ghost_text.enabled nativamente prefiere un booleano.
-        -- Si notas que no se refresca dinámicamente, déjalo en true,
-        -- ya que auto_show abajo se encargará de limitar cuándo se despliega todo.
-        enabled = true,
+        enabled = false,
       },
-      -- Se eliminó la sección 'trigger = { blocked_trigger_characters = {} }' que causaba el error
       menu = {
         auto_show = function(ctx)
-          -- Desactivar en buffers especiales (como terminales o ventanas de comandos)
           if vim.bo.buftype == "prompt" then
             return false
           end
@@ -35,8 +30,7 @@ return {
           local col = ctx.cursor[2]
           local before_cursor = line:sub(1, col)
 
-          -- Expresiones regulares de Lua para detectar delimitadores abiertos:
-          local inside_wiki = before_cursor:match(".*%[%[[^%]]*$") ~= nil
+          local inside_wiki = before_cursor:match(".*%[%[%s*[^%]]*$") ~= nil
           local inside_zk = before_cursor:match(".*{{[^}]*$") ~= nil
 
           return inside_wiki or inside_zk
@@ -56,12 +50,32 @@ return {
       },
       list = {
         selection = {
-          preselect = true, -- Sigue siendo útil para que el primer elemento ya esté marcado
+          preselect = true,
         },
       },
     },
     sources = {
-      default = { "bibman" },
+      -- Función dinámica para alternar fuentes según el contexto
+      default = function()
+        local line = vim.api.nvim_get_current_line()
+        local col = vim.api.nvim_win_get_cursor(0)[2]
+        local before_cursor = line:sub(1, col)
+
+        -- Contexto 1: Dentro de llaves dobles {{ (Bibliografía / Citas)
+        if before_cursor:match(".*{{[^}]*$") then
+          -- Forzamos a que SOLO use la fuente de bibliografía
+          return { "bibman" }
+        end
+
+        -- Contexto 2: Dentro de enlaces Wiki [[ (Notas generales)
+        if before_cursor:match(".*%[%[%s*[^%]]*$") then
+          -- Mantiene el LSP para indexar los títulos de las notas
+          return { "lsp" }
+        end
+
+        -- Contexto General: Fuera de delimitadores de Zettelkasten
+        return { "lsp", "path", "snippets", "buffer" }
+      end,
       providers = {
         bibman = {
           module = "blink.cmp.sources.bibman",
@@ -69,9 +83,21 @@ return {
           score_offset = 100,
         },
         lsp = {
+          -- Forzamos al LSP a no meter texto fantasma inline (ghost_text)
+          -- y filtramos para que NO sugiera texto plano ('Text') dentro de los corchetes
           transform_items = function(ctx, items)
+            local line = vim.api.nvim_get_current_line()
+            local col = vim.api.nvim_win_get_cursor(0)[2]
+            local before_cursor = line:sub(1, col)
+            local inside_wiki = before_cursor:match(".*%[%[%s*[^%]]*$") ~= nil
+
             local seen = {}
             return vim.tbl_filter(function(item)
+              -- Si estamos dentro de [[, descartamos completados tipo "Text" (palabras sueltas del buffer/LSP)
+              if inside_wiki and item.kind == vim.lsp.protocol.CompletionItemKind.Text then
+                return false
+              end
+
               if seen[item.label] then
                 return false
               end
