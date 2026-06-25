@@ -29,7 +29,7 @@ alias zsh-conf='nvim ~/.zshrc'
 alias so='source ~/.zshrc; clear'
 alias nvim-conf='cd ~/.config/nvim'
 alias clean='~/Proyectos/chrome_cleaner/chrome_cleaner.sh'
-alias vps='ssh -i ~/.ssh/id_ed25519_vps root@86.48.16.142'
+alias vps='export TERM=xterm-256color; ssh -i ~/.ssh/id_ed25519_vps root@86.48.16.142'
 
 # NPM
 alias nrd='npm run dev'
