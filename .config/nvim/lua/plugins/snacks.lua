@@ -6,6 +6,9 @@ return {
 
       -- Ajustes generales
       opts.bigfile = { enabled = true }
+      opts.notifier = {
+        width = { min = 40, max = 60 },
+      }
 
       -- Solo si es ZK
       -- if is_zk_dir then

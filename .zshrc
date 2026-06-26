@@ -21,7 +21,7 @@ export PATH="/Users/fabsanh/.antigravity-ide/antigravity-ide/bin:$PATH"
 export HOMEBREW_NO_ENV_HINTS=1
 
 # Configuro zoxide
-eval "$(zoxide init zsh --cmd cd)"
+eval "$(zoxide init zsh)"
 
 ## Acceso rápido
 alias emdl='cd ~/Proyectos/emdl && python3 emdl.py'

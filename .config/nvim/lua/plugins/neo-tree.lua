@@ -10,12 +10,19 @@ return {
     { "<C-e>", "<cmd>Neotree filesystem reveal left<cr>", desc = "Neotree reveal in explorer" },
   },
   opts = {
-    popup_border_style = "rounded", -- Estilo de borde: "double", "rounded", "single", "solid"
-    -- use_popups_for_input = false, -- Descomenta si prefieres usar vim.ui.input/vim.fn.confirm (que se integra con noice.nvim)
+    popup_border_style = "rounded",
     window = {
       width = 30,
     },
+    -- 1. Forzar a que Neo-tree escuche activamente los cambios de Git en tu sistema
+    enable_git_status = true,
+    refresh_notifiers = {
+      git_status = true,
+    },
     filesystem = {
+      -- 2. Asegura que Neo-tree observe cambios en el disco en tiempo real
+      use_libuv_file_watcher = true,
+
       commands = {
         delete = function(state)
           local node = state.tree:get_node()
@@ -23,18 +30,18 @@ return {
           if #name > 25 then
             name = string.sub(name, 1, 22) .. "..."
           end
-          
+
           local fs_actions = require("neo-tree.sources.filesystem.lib.fs_actions")
           local NuiInput = require("nui.input")
           local popups = require("neo-tree.ui.popups")
-          
+
           local popup_options = popups.popup_options("Delete '" .. name .. "'?", 40, {
             size = { width = 40 },
           })
-          
+
           local input = NuiInput(popup_options, {
             prompt = " y/n: ",
-            default_value = "y", -- 'y' viene escrito por defecto, listo para dar Enter
+            default_value = "y",
             on_submit = function(value)
               if value == "y" or value == "Y" then
                 local utils = require("neo-tree.utils")
@@ -45,11 +52,17 @@ return {
               end
             end,
           })
-          
+
           input:mount()
-          input:map("i", "<esc>", function() input:unmount() end, { noremap = true })
-          input:map("n", "<esc>", function() input:unmount() end, { noremap = true })
-          input:map("n", "q", function() input:unmount() end, { noremap = true })
+          input:map("i", "<esc>", function()
+            input:unmount()
+          end, { noremap = true })
+          input:map("n", "<esc>", function()
+            input:unmount()
+          end, { noremap = true })
+          input:map("n", "q", function()
+            input:unmount()
+          end, { noremap = true })
         end,
       },
     },

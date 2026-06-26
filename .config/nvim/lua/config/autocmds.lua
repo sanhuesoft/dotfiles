@@ -14,8 +14,9 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufReadPost" }, {
     local mesh_path = vim.fn.expand("~/Mesh/")
 
     if buf_name:find(mesh_path, 1, true) then
-      vim.opt_local.wrap = false
+      vim.opt_local.wrap = true
       vim.opt_local.textwidth = 80
+      vim.opt_local.autoindent = false
     end
   end,
 })

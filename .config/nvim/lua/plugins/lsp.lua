@@ -44,6 +44,7 @@ return {
                     if f then
                       local title, author, year
                       local in_frontmatter = false
+                      local current_key = nil
                       for _ = 1, 20 do
                         local file_line = f:read("*line")
                         if not file_line then
@@ -54,6 +55,7 @@ return {
                         elseif in_frontmatter then
                           local k, v = file_line:match("^([%w%-_]+):%s*(.-)%s*$")
                           if k and v then
+                            current_key = k
                             v = v:gsub("^[\"'](.-)[\"']$", "%1")
                             if k == "title" then
                               title = v
@@ -62,12 +64,30 @@ return {
                             elseif k == "year" or k == "date" then
                               year = v
                             end
+                          elseif current_key then
+                            local list_item = file_line:match("^%s*-%s*(.-)%s*$")
+                            if list_item then
+                              list_item = list_item:gsub("^[\"'](.-)[\"']$", "%1")
+                              if current_key == "author" or current_key == "authors" then
+                                if not author or author == "" then
+                                  author = list_item
+                                else
+                                  author = author .. ", " .. list_item
+                                end
+                              elseif current_key == "title" then
+                                if not title or title == "" then
+                                  title = list_item
+                                else
+                                  title = title .. " " .. list_item
+                                end
+                              end
+                            end
                           end
                         end
                       end
                       f:close()
 
-                      if title or author or year then
+                      if (title and title ~= "") or (author and author ~= "") or (year and year ~= "") then
                         -- Función local para dividir el texto a un ancho máximo determinado
                         local function wrap_text(text, max_width)
                           local lines = {}
@@ -91,22 +111,27 @@ return {
                         end
 
                         local lines = {}
-                        if title then
-                          local title_lines = wrap_text(title, 50)
-                          table.insert(lines, "Título: " .. title_lines[1])
-                          for i = 2, #title_lines do
-                            table.insert(lines, "        " .. title_lines[i])
+                        local max_width = 50
+                        if title and title ~= "" then
+                          local title_lines = wrap_text(title, max_width - 8) -- prefix is 8 columns
+                          if #title_lines > 0 then
+                            table.insert(lines, "Título: " .. title_lines[1])
+                            for i = 2, #title_lines do
+                              table.insert(lines, "        " .. title_lines[i])
+                            end
                           end
                         end
-                        if author then
-                          local author_lines = wrap_text(author, 50)
-                          table.insert(lines, "Autor: " .. author_lines[1])
-                          for i = 2, #author_lines do
-                            table.insert(lines, "       " .. author_lines[i])
+                        if author and author ~= "" then
+                          local author_lines = wrap_text(author, max_width - 8) -- prefix is 8 columns
+                          if #author_lines > 0 then
+                            table.insert(lines, "Autor:  " .. author_lines[1])
+                            for i = 2, #author_lines do
+                              table.insert(lines, "        " .. author_lines[i])
+                            end
                           end
                         end
-                        if year then
-                          table.insert(lines, "Año: " .. year)
+                        if year and year ~= "" then
+                          table.insert(lines, "Año:    " .. year)
                         end
                         vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, {
                           title = "Bibliografía (" .. target_citekey .. ")",
