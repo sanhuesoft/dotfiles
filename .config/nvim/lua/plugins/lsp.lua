@@ -14,7 +14,7 @@ return {
                 local target_citekey = nil
 
                 while true do
-                  local s, e, full = string.find(line, "{{([%w%-_.:]+)}}", start_idx)
+                  local s, e, full = string.find(line, "{{([^%s{}]+)}}", start_idx)
                   if not s then
                     break
                   end

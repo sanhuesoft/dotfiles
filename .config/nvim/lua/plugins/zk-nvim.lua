@@ -246,12 +246,8 @@ return {
       for line_idx, line in ipairs(lines) do
         local start_idx = 1
         while true do
-          -- Buscar citas con formato especial que incluyan páginas o rangos (ej. {{Key:25-27}}, {{Key.etal2023:25}})
-          local s, e, full = string.find(line, "{{([%w%-_.:]+-?[%d]*)}}", start_idx)
-          if not s then
-            -- Búsqueda de respaldo más general para capturar citekeys simples
-            s, e, full = string.find(line, "{{([%w%-_.:]+)}}", start_idx)
-          end
+          -- Buscar citas con formato especial (ej. {{Key:25-27}}, {{Peña2023}})
+          local s, e, full = string.find(line, "{{([^%s{}]+)}}", start_idx)
           if not s then
             break -- No hay más citas en la línea actual
           end
@@ -313,7 +309,7 @@ return {
     -- ortográficos (subrayado rojo de spell) definiendo una regla de sintaxis con @NoSpell.
     local function apply_nospell(bufnr)
       vim.api.nvim_buf_call(bufnr, function()
-        vim.cmd([[syntax match ZkCitationNoSpell /{{[[:alnum:]_.\:-]\+}}/ contains=@NoSpell]])
+        vim.cmd([[syntax match ZkCitationNoSpell /{{[^[:space:]{}]\+}}/ contains=@NoSpell]])
       end)
     end
 
@@ -357,13 +353,13 @@ return {
       local target_citekey = nil
 
       while true do
-        local s, e, citekey = string.find(line, "{{([%w%-_]+)}}", start_idx)
+        local s, e, full = string.find(line, "{{([^%s{}]+)}}", start_idx)
         if not s then
           break
         end
 
         if col >= s and col <= e then
-          target_citekey = citekey
+          target_citekey = full:match("^([^:]+)")
           break
         end
         start_idx = e + 1

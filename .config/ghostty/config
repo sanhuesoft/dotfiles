@@ -1,12 +1,13 @@
 # Tema
-theme = Ayu
-font-family = ""
+theme = TokyoNight
+font-size = 16
 
 # Ventana
 title = " "
 window-decoration = auto
 background-blur = true
-unfocused-split-opacity = 0.5
+# background-opacity = 0.9
+# unfocused-split-opacity = 0.5
 macos-icon = custom
 macos-custom-icon = ~/.config/ghostty/ghostty-theme-icons/icons/ayu-dark/ayu-dark.icns
 
