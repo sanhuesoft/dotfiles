@@ -45,7 +45,7 @@ return {
             -- Si no existe, dejamos que zk lo cree usando el grupo y plantilla del config.toml
             require("zk").new({
               group = "journal",
-              title = os.date("%Y-%m-%d"),
+              title = os.date("%Y%m%d"),
             })
           end
         end,
@@ -60,9 +60,7 @@ return {
           if title ~= "" then
             require("zk").new({
               group = "journal",
-              dir = "Journal",
               title = title,
-              extension = "md",
             })
           end
         end,
@@ -124,8 +122,8 @@ return {
       },
       -- Zk Insert Link
       {
-        "<leader>zl",
-        "<Cmd>ZkInsertLink<CR>",
+        "<leader>zi",
+        "<Cmd>ZkInsertLink { sort = { 'modified' } }<CR>",
         desc = "Insert Link",
         icon = "󰌷 ",
       },
