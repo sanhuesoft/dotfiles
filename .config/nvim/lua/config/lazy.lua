@@ -23,8 +23,8 @@ require("lazy").setup({
     lazy = false,
     version = false,
   },
-  install = { colorscheme = { "ayu", "tokyonight", "habamax" } },
-  checker = { enabled = true }, 
+  install = { colorscheme = { "tokyonight" } },
+  checker = { enabled = true },
   performance = {
     rtp = {
       -- disable some rtp plugins

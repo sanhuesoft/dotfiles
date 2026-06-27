@@ -13,7 +13,6 @@ return {
     },
     highlight = {
       enable = true,
-      disable = { "snacks_dashboard" },
     },
   },
 }
