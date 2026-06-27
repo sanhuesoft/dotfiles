@@ -6,6 +6,7 @@ return {
       opts.bigfile = { enabled = true }
       opts.indent = { enabled = false }
       opts.notifier = { width = { min = 40, max = 60 } }
+      opts.image = { enabled = true, backend = "ghostty" }
       opts.dashboard.preset.header = "                                                                        \n"
         .. "                                                                        \n"
         .. "                                                                      \n"
