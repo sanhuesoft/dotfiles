@@ -4,7 +4,7 @@ alias zsh-conf='nvim ~/.zshrc'
 alias so='source ~/.zshrc; clear'
 alias nvim-conf='cd ~/.config/nvim'
 alias clean='~/Proyectos/chrome_cleaner/chrome_cleaner.sh'
-alias vps='export TERM=xterm-256color; ssh -i ~/.ssh/id_ed25519_vps root@86.48.16.142'
+alias vps='export TERM=xterm-256color; ssh -i ~/.ssh/id_ed25519_vps fabsanh@86.48.16.142'
 alias rbp='export TERM=xterm-256color; ssh -i ~/.ssh/id_ed25519_vps solar-assistant@192.168.100.6'
 
 # NPM
@@ -39,5 +39,5 @@ alias c='clear'
 alias nv='nvim'
 alias 7z='7zz'
 alias bi='brew install'
-
+alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'
 
