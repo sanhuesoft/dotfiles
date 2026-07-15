@@ -1,6 +1,7 @@
 # Tema
 theme = TokyoNight
 font-size = 16
+font-family = JetBrainsMono Nerd Font
 
 # Ventana
 title = " "
@@ -10,6 +11,9 @@ background-blur = true
 # unfocused-split-opacity = 0.5
 macos-icon = custom
 macos-custom-icon = ~/.config/ghostty/ghostty-theme-icons/icons/ayu-dark/ayu-dark.icns
+
+# Terminal
+command = /opt/homebrew/bin/bash -i
 
 # Mouse
 mouse-hide-while-typing = true

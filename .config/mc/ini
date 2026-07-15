@@ -88,7 +88,7 @@ filepos_max_saved_entries=1024
 
 [Layout]
 output_lines=0
-left_panel_size=107
+left_panel_size=90
 top_panel_size=0
 message_visible=false
 keybar_visible=true
@@ -115,6 +115,7 @@ clipboard_paste=
 base_color=
 xterm-ghostty=
 color_terminals=
+xterm-256color=
 
 [Panels]
 show_mini_info=true
@@ -136,6 +137,7 @@ permission_mode=false
 torben_fj_mode=false
 quick_search_mode=2
 select_flags=0
+simple_swap=false
 
 [Panelize]
 Find rejects after patching=find . -name \\*.rej -print
